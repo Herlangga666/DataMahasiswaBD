@@ -4,13 +4,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import java.util.List;
 
 import app.android.datamahasiswapwpb.DatabaseHelper.DatabaseHelper;
 
-public class LihatData extends AppCompatActivity {
+public class LihatData extends AppCompatActivity{
 
     RecyclerView reMahasiswa;
     RecyclerView.LayoutManager layoutManager;
@@ -24,7 +26,6 @@ public class LihatData extends AppCompatActivity {
         reMahasiswa=(RecyclerView)findViewById(R.id.reDataMahasiswa);
         layoutManager=new LinearLayoutManager(LihatData.this);
         reMahasiswa.setLayoutManager(layoutManager);
-
         setupRecyclerView();
 
     }
@@ -32,8 +33,9 @@ public class LihatData extends AppCompatActivity {
     private void setupRecyclerView() {
         DatabaseHelper db=new DatabaseHelper(LihatData.this);
         listMahasiswa=db.selectMahasiswa();
-        RecyclerViewAdapter adapter=new RecyclerViewAdapter(LihatData.this,listMahasiswa);
+        RecyclerViewAdapter adapter=new RecyclerViewAdapter(LihatData.this,listMahasiswa,null);
         reMahasiswa.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
+
 }

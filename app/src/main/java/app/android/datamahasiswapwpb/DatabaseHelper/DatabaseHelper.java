@@ -1,4 +1,5 @@
 package app.android.datamahasiswapwpb.DatabaseHelper;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -14,7 +15,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final int DB_VERSION = 1;
     private static final String DB_NAME = "db_mahasiswa";
-
+    public static final int id = 0;
 
     public DatabaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -24,7 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         String sql = "CREATE TABLE IF NOT EXISTS tbl_mahasiswa(" +
-                "id INTEGER NOT NULL PRIMARY KEY ," +
+                "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT ," +
                 "nama varchar(200) NOT NULL," +
                 "tgl_lahir datetime NOT NULL," +
                 "jenkel varchar(200) NOT NULL," +
@@ -42,6 +43,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public void insert(Mahasiswa mahasiswa){
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put("nama" , mahasiswa.getNama());
+        cv.put("tgl_lahir" , mahasiswa.getTgl_lahir());
+        cv.put("jenkel" , mahasiswa.getJenkel());
+        cv.put("alamat" , mahasiswa.getAlamat());
+
+        db.insert("tbl_mahasiswa",null,cv);
+    }
+
 
     public List<Mahasiswa> selectMahasiswa() {
         ArrayList<Mahasiswa> userList = new ArrayList<Mahasiswa>();
@@ -49,13 +62,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String[] columns = {"*"};
         Cursor c = db.query("tbl_mahasiswa", columns, null, null, null, null, null);
         while (c.moveToNext()) {
-            String name = c.getString(0);
+            int id = c.getInt(0);
+            String nama = c.getString(1);
+            String tgl_lahir = c.getString(2);
+            String jenkel = c.getString(3);
+            String alamat = c.getString(4);
+
+
             Mahasiswa mahasiswa = new Mahasiswa();
-            mahasiswa.setNama(name);
+            mahasiswa.setId(id);
+            mahasiswa.setNama(nama);
+            mahasiswa.setTgl_lahir(tgl_lahir);
+            mahasiswa.setJenkel(jenkel);
+            mahasiswa.setAlamat(alamat);
             userList.add(mahasiswa);
         }
         return userList;
     }
-
 
 }
