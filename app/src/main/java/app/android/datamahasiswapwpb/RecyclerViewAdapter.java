@@ -1,6 +1,7 @@
 package app.android.datamahasiswapwpb;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +19,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     Context ctx;
     List<Mahasiswa> mahasiswa;
+    OnUserClickListener listener;
 
-    public RecyclerViewAdapter(Context ctx, List<Mahasiswa> mahasiswa) {
+    public RecyclerViewAdapter(Context ctx, List<Mahasiswa> mahasiswa , OnUserClickListener listener) {
         this.ctx = ctx;
         this.mahasiswa = mahasiswa;
+        this.listener = listener;
+    }
+
+    public interface OnUserClickListener{
+        void onUserClick(Mahasiswa current);
     }
 
 
@@ -35,13 +42,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerViewAdapter.UserViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerViewAdapter.UserViewHolder holder, final int position) {
         final Mahasiswa person = mahasiswa.get(position);
         holder.txtNama.setText(person.getNama());
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(ctx, person.getId(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(view.getContext(),DetailMahasiswa.class);
+                String id = person.getId()+"";
+                intent.putExtra("id",id);
+                intent.putExtra("nama",person.getNama());
+                intent.putExtra("tgl",person.getTgl_lahir());
+                intent.putExtra("jenkel",person.getJenkel());
+                intent.putExtra("alamat",person.getAlamat());
+                ctx.startActivity(intent);
             }
         });
     }

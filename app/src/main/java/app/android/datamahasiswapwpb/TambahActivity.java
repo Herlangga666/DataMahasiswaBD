@@ -14,9 +14,10 @@ import java.util.Calendar;
 
 import app.android.datamahasiswapwpb.DatabaseHelper.DatabaseHelper;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class TambahActivity extends AppCompatActivity {
-    public static final String DATABASE_NAME = "db_mahasiswa";
-    SQLiteDatabase db;
+
     EditText eNama ,eTglLahir , eJenkel , eAlamat;
     Button btnTambah;
 
@@ -25,8 +26,6 @@ public class TambahActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tambah);
 
-        db = openOrCreateDatabase(DATABASE_NAME , MODE_PRIVATE , null);
-        createTable();
         eNama = (EditText)findViewById(R.id.eNama);
         eTglLahir = (EditText)findViewById(R.id.eTglLahir);
         eJenkel = (EditText)findViewById(R.id.eJenkel);
@@ -37,32 +36,23 @@ public class TambahActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 DatabaseHelper databaseHelper = new DatabaseHelper(TambahActivity.this);
-                databaseHelper.onCreate(db);
+                Mahasiswa mahasiswa = new Mahasiswa();
                 String nama = eNama.getText().toString().trim();
+                mahasiswa.setNama(nama);
                 String tgl_lahir = eTglLahir.getText().toString().trim();
+                mahasiswa.setTgl_lahir(tgl_lahir);
                 String jenkel = eJenkel.getText().toString().trim();
+                mahasiswa.setJenkel(jenkel);
                 String alamat = eAlamat.getText().toString().trim();
+                mahasiswa.setAlamat(alamat);
 
-                String sql = "INSERT INTO tbl_mahasiswa(nama , tgl_lahir , jenkel , alamat)" +
-                        "VALUES (? , ? , ? , ?)";
+                databaseHelper.insert(mahasiswa);
 
-                db.execSQL(sql , new String[]{nama , tgl_lahir , jenkel , alamat});
+
                 Toast.makeText(TambahActivity.this , "Data Berhasil Di Input" , Toast.LENGTH_SHORT).show();
             }
         });
 
-    }
-
-    private void createTable(){
-        String sql = "CREATE TABLE IF NOT EXISTS tbl_mahasiswa(" +
-                "id INTEGER NOT NULL CONSTRAINT tbl_mahasiswa_pk PRIMARY KEY ," +
-                "nama varchar(200) NOT NULL," +
-                "tgl_lahir datetime NOT NULL," +
-                "jenkel varchar(200) NOT NULL," +
-                "alamat varchar(200) NOT NULL" +
-                ");";
-
-        db.execSQL(sql);
     }
 
 }
